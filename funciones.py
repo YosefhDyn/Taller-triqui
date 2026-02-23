@@ -1,3 +1,4 @@
+import math
 def crear_tablero():
     return [' '] * 9
 
@@ -16,7 +17,7 @@ def mostrar_tablero(tablero):
 # tablero[4] = 'O'
 # mostrar_tablero(tablero)
 
-import math
+
 
 # =================================================================
 # PARTE 2: SUCESORES Y HEURÍSTICA (Trabajo de tu compañero)
@@ -59,20 +60,12 @@ def deshacer_movimiento(tablero, posicion):
     """
     tablero[posicion] = ' '
 
-
-# =================================================================
-# PARTE 1: ALGORITMO MIN-MAX (Tu trabajo)
-# =================================================================
-
 def minimax(tablero, profundidad, es_maximizador):
-    """
-    Algoritmo Min-Max recursivo.
-    """
-    # 1. CASO BASE: Verificar si el juego terminó
+    # 1. Caso base: Verificar si el juego terminó
     if hay_ganador_o_empate(tablero):
         return evaluar_estado(tablero)
 
-    # 2. TURNO DE MAX (La IA busca el valor más alto)
+    # 2. Max: Se busca el valor más alto
     if es_maximizador:
         mejor_valor = -math.inf
         for sucesor in obtener_sucesores(tablero):
@@ -82,7 +75,7 @@ def minimax(tablero, profundidad, es_maximizador):
             mejor_valor = max(mejor_valor, valor)
         return mejor_valor
 
-    # 3. TURNO DE MIN (El oponente busca el valor más bajo)
+    # 3. Min: Se busca el valor más bajo
     else:
         mejor_valor = math.inf
         for sucesor in obtener_sucesores(tablero):
@@ -93,16 +86,11 @@ def minimax(tablero, profundidad, es_maximizador):
         return mejor_valor
 
 def obtener_mejor_movimiento(tablero):
-    """
-    Función principal que llama a minimax para decidir la mejor jugada.
-    Retorna el mejor índice (0-8) para la IA ('X').
-    """
     mejor_valor = -math.inf
     mejor_jugada = None
 
     for sucesor in obtener_sucesores(tablero):
         hacer_movimiento(tablero, sucesor, 'X')
-        # Llamamos a minimax asumiendo que el siguiente turno es de MIN (False)
         valor = minimax(tablero, 0, False)
         deshacer_movimiento(tablero, sucesor)
         
