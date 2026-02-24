@@ -19,33 +19,35 @@ def mostrar_tablero(tablero):
 
 
 
-# =================================================================
-# PARTE 2: SUCESORES Y HEURÍSTICA (Trabajo de tu compañero)
-# =================================================================
+LINEAS = [
+    [0,1,2], [3,4,5], [6,7,8],
+    [0,3,6], [1,4,7], [2,5,8], 
+    [0,4,8], [2,4,6]          
+]
 
 def obtener_sucesores(tablero):
-    """
-    Retorna una lista de los índices (0-8) vacíos en el tablero.
-    """
-    # Tu compañero debe implementar esto
-    pass
+    sucesores = []
+    for i in range(9):
+        if tablero[i] == ' ':
+            sucesores.append(i)
+    return sucesores
 
 def evaluar_estado(tablero):
     """
     Evalúa el tablero actual.
     Retorna:
-      +10 si gana MAX ('X')
-      -10 si gana MIN ('O')
+      +1 si gana MAX ('X')
+      -1 si gana MIN ('O')
         0 si es empate o el juego no ha terminado
     """
-    # Tu compañero debe implementar esto
+    #revisar cada línea para ver si hay un ganador
     pass
 
 def hay_ganador_o_empate(tablero):
     """
     Retorna True si el juego terminó (alguien ganó o no hay más movimientos).
     """
-    # Tu compañero debe implementar esto
+    #usar evaluar_estado y verificar si quedan espacios
     pass
 
 def hacer_movimiento(tablero, posicion, jugador):
@@ -99,3 +101,9 @@ def obtener_mejor_movimiento(tablero):
             mejor_jugada = sucesor
 
     return mejor_jugada
+
+#falta implementar la funcion jugar() que:
+#   - cree el tablero
+#   - alterne turnos entre humano y la IA
+#   - muestre el tablero en cada turno
+#   - anuncie el resultado al final
