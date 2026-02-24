@@ -1,4 +1,5 @@
 import math
+
 def crear_tablero():
     return [' '] * 9
 
@@ -24,6 +25,7 @@ LINEAS = [
     [0,3,6], [1,4,7], [2,5,8], 
     [0,4,8], [2,4,6]          
 ]
+# Combinaciones para ganar
 
 def obtener_sucesores(tablero):
     sucesores = []
@@ -31,24 +33,28 @@ def obtener_sucesores(tablero):
         if tablero[i] == ' ':
             sucesores.append(i)
     return sucesores
+# Casillas vacias
 
 def evaluar_estado(tablero):
-    """
-    Evalúa el tablero actual.
-    Retorna:
-      +1 si gana MAX ('X')
-      -1 si gana MIN ('O')
-        0 si es empate o el juego no ha terminado
-    """
-    #revisar cada línea para ver si hay un ganador
-    pass
+    for linea in LINEAS:
+        a, b, c = linea
+        
+        if tablero[a] == tablero[b] == tablero[c] != ' ':
+            if tablero[a] == 'X':
+                return 1
+            else:
+                return -1
+    
+    return 0
 
 def hay_ganador_o_empate(tablero):
-    """
-    Retorna True si el juego terminó (alguien ganó o no hay más movimientos).
-    """
-    #usar evaluar_estado y verificar si quedan espacios
-    pass
+    if evaluar_estado(tablero) != 0:
+        return True
+    
+    if ' ' not in tablero:
+        return True
+    
+    return False
 
 def hacer_movimiento(tablero, posicion, jugador):
     """
@@ -102,8 +108,73 @@ def obtener_mejor_movimiento(tablero):
 
     return mejor_jugada
 
+
+def jugar(inicia_humano):
+    tablero = crear_tablero()
+    turno_humano = inicia_humano
+
+    while True:
+
+        mostrar_tablero(tablero)
+
+        if turno_humano:
+            try:
+                movimiento = int(input("Ingresa tu movimiento (0-8): "))
+                
+                if 0 <= movimiento <= 8 and tablero[movimiento] == ' ':
+                    hacer_movimiento(tablero, movimiento, 'O')
+                    turno_humano = False
+                else:
+                    print("Movimiento inválido.")
+                    continue
+
+            except:
+                print("Ingresa un número válido.")
+                continue
+
+        else:
+            print("Turno de la IA")
+            mejor_mov = obtener_mejor_movimiento(tablero)
+            hacer_movimiento(tablero, mejor_mov, 'X')
+            turno_humano = True
+
+        if hay_ganador_o_empate(tablero):
+            break
+
+    mostrar_tablero(tablero)
+
+    resultado = evaluar_estado(tablero)
+
+    if resultado == 1:
+        print("La IA gana")
+    elif resultado == -1:
+        print("Tu ganaste")
+    else:
+        print("Hay un empate")
+
+
 #falta implementar la funcion jugar() que:
 #   - cree el tablero
 #   - alterne turnos entre humano y la IA
 #   - muestre el tablero en cada turno
 #   - anuncie el resultado al final
+
+
+def main():
+    inicia_humano = True
+
+    while True:
+        jugar(inicia_humano)
+
+        respuesta = input("¿Quieres jugar otra vez? (s/n): ").lower()
+
+        if respuesta != 's':
+            print("Gracias por jugar")
+            break
+
+        inicia_humano = not inicia_humano
+
+if __name__ == "__main__":
+    main()
+
+
