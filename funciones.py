@@ -1,4 +1,5 @@
 import math
+from gui import iniciar_gui
 
 def crear_tablero():
     return [' '] * 9
@@ -152,27 +153,26 @@ def jugar(inicia_humano):
     else:
         print("Hay un empate")
 
-
-#falta implementar la funcion jugar() que:
-#   - cree el tablero
-#   - alterne turnos entre humano y la IA
-#   - muestre el tablero en cada turno
-#   - anuncie el resultado al final
-
-
 def main():
-    inicia_humano = True
+    print("=== TRIQUI – IA Minimax ===")
+    print("1. Jugar en consola")
+    print("2. Jugar con interfaz gráfica")
+    opcion = input("Selecciona una opción (1/2): ").strip()
 
-    while True:
-        jugar(inicia_humano)
+    if opcion == "2":
+        iniciar_gui()
+    else:
+        inicia_humano = True
+        while True:
+            jugar(inicia_humano)
 
-        respuesta = input("¿Quieres jugar otra vez? (s/n): ").lower()
+            respuesta = input("¿Quieres jugar otra vez? (s/n): ").lower()
 
-        if respuesta != 's':
-            print("Gracias por jugar")
-            break
+            if respuesta != 's':
+                print("Gracias por jugar")
+                break
 
-        inicia_humano = not inicia_humano
+            inicia_humano = not inicia_humano
 
 if __name__ == "__main__":
     main()
