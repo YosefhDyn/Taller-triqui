@@ -110,7 +110,56 @@ def obtener_mejor_movimiento(tablero):
     return mejor_jugada
 
 
-def jugar(inicia_humano):
+def alphabeta(tablero, profundidad, alpha, beta, es_maximizador):
+    # Caso base: juego terminado
+    if hay_ganador_o_empate(tablero):
+        return evaluar_estado(tablero)
+
+    if es_maximizador:
+        valor = -math.inf
+        for sucesor in obtener_sucesores(tablero):
+            hacer_movimiento(tablero, sucesor, 'X')
+            v = alphabeta(tablero, profundidad + 1, alpha, beta, False)
+            deshacer_movimiento(tablero, sucesor)
+            valor = max(valor, v)
+            alpha = max(alpha, valor)
+            if alpha >= beta:  # poda beta
+                break
+        return valor
+    else:
+        valor = math.inf
+        for sucesor in obtener_sucesores(tablero):
+            hacer_movimiento(tablero, sucesor, 'O')
+            v = alphabeta(tablero, profundidad + 1, alpha, beta, True)
+            deshacer_movimiento(tablero, sucesor)
+            valor = min(valor, v)
+            beta = min(beta, valor)
+            if alpha >= beta:  # poda alfa
+                break
+        return valor
+
+
+def obtener_mejor_movimiento_alfa_beta(tablero):
+    mejor_valor = -math.inf
+    mejor_jugada = None
+    alpha = -math.inf
+    beta = math.inf
+
+    for sucesor in obtener_sucesores(tablero):
+        hacer_movimiento(tablero, sucesor, 'X')
+        valor = alphabeta(tablero, 0, alpha, beta, False)
+        deshacer_movimiento(tablero, sucesor)
+
+        if valor > mejor_valor:
+            mejor_valor = valor
+            mejor_jugada = sucesor
+
+        alpha = max(alpha, mejor_valor)
+
+    return mejor_jugada
+
+
+def jugar(inicia_humano, use_alphabeta=False):
     tablero = crear_tablero()
     turno_humano = inicia_humano
 
@@ -135,7 +184,10 @@ def jugar(inicia_humano):
 
         else:
             print("Turno de la IA")
-            mejor_mov = obtener_mejor_movimiento(tablero)
+            if use_alphabeta:
+                mejor_mov = obtener_mejor_movimiento_alfa_beta(tablero)
+            else:
+                mejor_mov = obtener_mejor_movimiento(tablero)
             hacer_movimiento(tablero, mejor_mov, 'X')
             turno_humano = True
 
@@ -155,25 +207,29 @@ def jugar(inicia_humano):
 
 def main():
     print("=== TRIQUI – IA Minimax ===")
-    print("1. Jugar en consola")
+    print("1. Jugar en consola (Minimax)")
     print("2. Jugar con interfaz gráfica")
-    opcion = input("Selecciona una opción (1/2): ").strip()
+    print("3. Jugar en consola (Alfa-Beta)")
+    opcion = input("Selecciona una opción (1/2/3): ").strip()
 
     if opcion == "2":
         from gui import iniciar_gui
         iniciar_gui()
-    else:
-        inicia_humano = True
-        while True:
-            jugar(inicia_humano)
+        return
 
-            respuesta = input("¿Quieres jugar otra vez? (s/n): ").lower()
+    use_alphabeta = opcion == "3"
 
-            if respuesta != 's':
-                print("Gracias por jugar")
-                break
+    inicia_humano = True
+    while True:
+        jugar(inicia_humano, use_alphabeta=use_alphabeta)
 
-            inicia_humano = not inicia_humano
+        respuesta = input("¿Quieres jugar otra vez? (s/n): ").lower()
+
+        if respuesta != 's':
+            print("Gracias por jugar")
+            break
+
+        inicia_humano = not inicia_humano
 
 if __name__ == "__main__":
     main()
