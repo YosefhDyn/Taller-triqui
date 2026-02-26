@@ -1,5 +1,5 @@
 import math
-from gui import iniciar_gui
+
 
 def crear_tablero():
     return [' '] * 9
@@ -160,6 +160,7 @@ def main():
     opcion = input("Selecciona una opción (1/2): ").strip()
 
     if opcion == "2":
+        from gui import iniciar_gui
         iniciar_gui()
     else:
         inicia_humano = True
@@ -176,5 +177,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
